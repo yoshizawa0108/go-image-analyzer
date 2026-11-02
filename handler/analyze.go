@@ -73,12 +73,18 @@ func readImageData(c *gin.Context) ([]byte, string, error) {
 		if err != nil {
 			return nil, "", fmt.Errorf("failed to read 'image' field from form: %w", err)
 		}
-		defer file.Close()
+
+		defer func() {
+			if err := file.Close(); err != nil {
+				log.Printf("failed to close uploaded image file: %v", err)
+			}
+		}()
 
 		data, err := io.ReadAll(file)
 		if err != nil {
 			return nil, "", fmt.Errorf("failed to read image file: %w", err)
 		}
+
 		return data, header.Filename, nil
 	}
 

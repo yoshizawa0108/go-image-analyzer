@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -46,7 +47,11 @@ func (s *HuggingFaceService) Analyze(imageData []byte) ([]model.DetectedObject, 
 	if err != nil {
 		return nil, fmt.Errorf("failed to call Hugging Face API: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("failed to close Hugging Face API response body: %v", err)
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
