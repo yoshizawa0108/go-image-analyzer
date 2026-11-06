@@ -9,20 +9,28 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go-image-analyzer/model"
-	"go-image-analyzer/repository"
-	"go-image-analyzer/service"
 )
 
 const maxImageSize = 10 << 20 // 10MB
 
+// Analyzer handles image analysis
+type Analyzer interface {
+	Analyze(imageData []byte) ([]model.DetectedObject, error)
+}
+
+// AnalysisSaver handles saving analysis results
+type AnalysisSaver interface {
+	Save(filename string, objects []model.DetectedObject) (*model.AnalysisResult, error)
+}
+
 // AnalyzeHandler handles POST /api/analyze requests
 type AnalyzeHandler struct {
-	hfService    *service.HuggingFaceService
-	analysisRepo *repository.AnalysisRepository
+	hfService    Analyzer
+	analysisRepo AnalysisSaver
 }
 
 // NewAnalyzeHandler creates a new AnalyzeHandler
-func NewAnalyzeHandler(hfService *service.HuggingFaceService, repo *repository.AnalysisRepository) *AnalyzeHandler {
+func NewAnalyzeHandler(hfService Analyzer, repo AnalysisSaver) *AnalyzeHandler {
 	return &AnalyzeHandler{
 		hfService:    hfService,
 		analysisRepo: repo,
