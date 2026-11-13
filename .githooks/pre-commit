@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+echo "Checking Go formatting..."
+
+unformatted=$(gofmt -l .)
+
+if [ -n "$unformatted" ]; then
+    echo "Error: Go files need formatting:"
+    echo "$unformatted"
+    echo "Run: gofmt -w <file>"
+    exit 1
+fi
+
+echo "Checking whitespace..."
+
+git diff --cached --check
+
+echo "Pre-commit checks passed."

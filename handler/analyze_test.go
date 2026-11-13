@@ -1,4 +1,3 @@
-
 package handler
 
 import (
@@ -93,12 +92,12 @@ func TestAnalyzeHandler_Handle(t *testing.T) {
 		expectedFilename string
 	}{
 		{
-			name:             "successful image analysis",
-			imageData:        []byte("test-image"),
-			analyzerObjects:  expectedObjects,
-			expectedStatus:   http.StatusOK,
-			expectedAnalyze:  1,
-			expectedSave:     1,
+			name:            "successful image analysis",
+			imageData:       []byte("test-image"),
+			analyzerObjects: expectedObjects,
+			expectedStatus:  http.StatusOK,
+			expectedAnalyze: 1,
+			expectedSave:    1,
 		},
 		{
 			name:            "empty request body",
